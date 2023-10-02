@@ -12,19 +12,11 @@ public class TasksService implements ITasksService, IStorageUsing {
     @Override
     public String getTasks(String login) {
         StringBuilder result = new StringBuilder();
-        String[] lines = storage.getTasks(login);
-
-        if (lines.length == 0) return "EMPTY";
-
-        String[][] arr = new String[lines.length][lines[0].split(" ").length];
-
-        for (int i = 0; i < lines.length; i++) {
-            arr[i] = lines[i].split(" ");
-            String start = (i == 0) ? "[" : "";
-            String end = (i == lines.length - 1) ? "]" : ",";
-            result.append(start).append(Arrays.toString(arr[i])).append(end);
+        String[] tasks = storage.getTasks(login);
+        if (tasks == null ) return null;
+        for (String task : tasks) {
+            result.append(task);
         }
-
         return result.toString();
     }
 

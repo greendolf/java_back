@@ -1,7 +1,7 @@
 package infrastructure.controllers.endpoint.auth;
 
 
-import app.ILoginService;
+import app.IAuthService;
 import infrastructure.builder.Builder;
 import infrastructure.controllers.endpoint.IController;
 import infrastructure.controllers.endpoint.IFactory;
@@ -31,7 +31,7 @@ class AuthController implements IController {
         Map<String, String> requestParams = request.params;
         String login = requestParams.get("login");
         String password = requestParams.get("password");
-        ILoginService ts = Builder.buildLoginService();
+        IAuthService ts = Builder.buildAuthService();
         String token = ts.login(login, password);
         Response response = new Response();
         if (token != null) {

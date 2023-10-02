@@ -1,5 +1,5 @@
 package app;
 
-public interface ILoginService {
+public interface IAuthService {
     public String login(String login, String password);
 }

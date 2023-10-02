@@ -1,10 +1,10 @@
-package app.services.login;
+package app.services.auth;
 
-import app.ILoginService;
+import app.IAuthService;
 import app.IStorage;
 import app.IStorageUsing;
 
-public class LoginService implements ILoginService, IStorageUsing {
+public class AuthService implements IAuthService, IStorageUsing {
     private IStorage storage;
 
     @Override
@@ -12,7 +12,7 @@ public class LoginService implements ILoginService, IStorageUsing {
         if (storage.findUser(login, password)) {
             return "token";
         } else {
-            return "";
+            return null;
         }
     }
 

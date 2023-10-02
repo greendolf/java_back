@@ -43,16 +43,20 @@ class Handler implements HttpHandler {
         Map<String, Object> responseBody;
 
         try {
-            InputStream requestBodyStream = httpExchange.getRequestBody();
-            Map<String, Object> requestBody =
-                    new ObjectMapper().readValue(new String(requestBodyStream.readAllBytes()), HashMap.class);
             Headers requestHeaders = httpExchange.getRequestHeaders();
             String requestMethod = httpExchange.getRequestMethod();
             URI requestURI = httpExchange.getRequestURI();
 
             Request request = new Request();
             request.method = Method.valueOf(requestMethod.toUpperCase());
+            if (request.method == Method.POST) {
+                InputStream requestBodyStream = httpExchange.getRequestBody();
+                String bodyString = new String(requestBodyStream.readAllBytes());
+                request.body = new ObjectMapper().readValue(bodyString, HashMap.class);
+                System.out.println("body : " + request.body);
+            }
             request.path = requestURI.getPath();
+            System.out.println("path : " + request.path);
             request.params = new HashMap<>();
             String query = requestURI.getQuery();
             if (query != null) {
@@ -69,7 +73,6 @@ class Handler implements HttpHandler {
                     }
                 }
             }
-            request.body = requestBody;
 
 
             Response response = Router.route(request);
@@ -81,12 +84,12 @@ class Handler implements HttpHandler {
                 }
             }
             responseBody = response.body;
-            httpExchange.sendResponseHeaders(response.code, responseBody.toString().getBytes().length);
+            httpExchange.sendResponseHeaders(response.code, new ObjectMapper().writeValueAsString(responseBody).getBytes().length);
         } catch (Exception ex) {
             responseBody = new HashMap<>();
-            responseBody.put("desc", "fatal error" + ex.getMessage()); //"Fatal error: " + ex.getMessage();
+            responseBody.put("desc", "fatal error " + ex.getMessage()); //"Fatal error: " + ex.getMessage();
             responseHeaders.clear();
-            httpExchange.sendResponseHeaders(500, responseBody.toString().getBytes().length);
+            httpExchange.sendResponseHeaders(500, new ObjectMapper().writeValueAsString(responseBody).getBytes().length);
         }
 
         responseStream.write(new ObjectMapper().writeValueAsString(responseBody).getBytes());

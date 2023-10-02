@@ -12,7 +12,7 @@ public class RegisterService implements IRegisterService, IStorageUsing {
         if (storage.addUser(login, password)) {
             return "token";
         } else {
-            return "";
+            return null;
         }
     }
 

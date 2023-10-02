@@ -3,15 +3,20 @@ package infrastructure.builder;
 import app.*;
 
 public class Builder {
-    public static ICalcService buildCalcService() {
-        return app.Factory.createCalcService();
+    public static ICalculationService buildCalculationService() {
+        IStorage storage = infrastructure.storage.mongoStorage.Factory.createInstance();
+
+        ICalculationService service = app.Factory.createCalculationService();
+        ((IStorageUsing) service).useStorage(storage);
+
+        return service;
     }
 
-    public static ILoginService buildLoginService() {
+    public static IAuthService buildAuthService() {
 
         IStorage storage = infrastructure.storage.mongoStorage.Factory.createInstance();
 
-        ILoginService service = app.Factory.createLoginService();
+        IAuthService service = app.Factory.createAuthService();
         ((IStorageUsing) service).useStorage(storage);
 
         return service;

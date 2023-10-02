@@ -38,10 +38,10 @@ class TasksController implements IController {
             response.headers = new HashMap<>();
             response.headers.put("Content-Type", "text/plain; charset=UTF-8");
             response.body = new HashMap<>();
-            response.body.put("result", "OK");
+            response.body.put("result", result);
             //response.body = "OK";
         } else {
-            throw new Exception("error while getting tasks");
+            throw new Exception("error while getting tasks or tasks are empty");
         }
         return response;
     }

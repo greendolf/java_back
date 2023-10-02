@@ -1,7 +1,7 @@
-package infrastructure.controllers.endpoint.calc;
+package infrastructure.controllers.endpoint.calculation;
 
 
-import app.ICalcService;
+import app.ICalculationService;
 import infrastructure.builder.Builder;
 import infrastructure.controllers.endpoint.IController;
 import infrastructure.controllers.endpoint.IFactory;
@@ -16,27 +16,26 @@ public class Factory implements IFactory {
 
     @Override
     public IController createInstance() {
-        return new CalcController();
+        return new CalculationController();
     }
 }
-class CalcController implements IController {
+class CalculationController implements IController {
 
     @Override
     public boolean supports(String path, Method method) {
-        return ((path.startsWith("/calc")) && (method == Method.GET));
+        return ((path.startsWith("/calculation")) && (method == Method.POST));
     }
 
     @Override
     public Response service(Request request) throws Exception {
-        Map<String, String> requestParams = request.params;
-        int a = Integer.parseInt(requestParams.get("a"));
-        int b = Integer.parseInt(requestParams.get("b"));
-        ICalcService ts = Builder.buildCalcService();
+        Map<String, Object> requestBody = request.body;
+        int id = (int) requestBody.get("id");
+        ICalculationService ts = Builder.buildCalculationService();
         String calc = null;
         if (request.path.endsWith("/sum")) {
-            calc = ts.sum(a, b);
+            calc = ts.sum(id);
         } else if (request.path.endsWith("/sub")) {
-            calc = ts.sub(a, b);
+            calc = ts.sub(id);
         }
         Response response = new Response();
         if (calc != null) {

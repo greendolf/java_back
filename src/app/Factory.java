@@ -1,18 +1,18 @@
 package app;
 
 
-import app.services.calc.CalcService;
-import app.services.login.LoginService;
+import app.services.calculation.Calculation;
+import app.services.auth.AuthService;
 import app.services.register.RegisterService;
 import app.services.task.TaskService;
 import app.services.tasks.TasksService;
 
 public class Factory {
-    public static ICalcService createCalcService() {
-        return new CalcService();
+    public static ICalculationService createCalculationService() {
+        return new Calculation();
     }
-    public static ILoginService createLoginService() {
-        return new LoginService();
+    public static IAuthService createAuthService() {
+        return new AuthService();
     }
     public static IRegisterService createRegisterService() {
         return new RegisterService();
