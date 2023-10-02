@@ -1,7 +1,7 @@
-package infrastructure.controllers.endpoint.calc;
+package infrastructure.controllers.endpoint.auth;
 
 
-import app.ICalcService;
+import app.ILoginService;
 import infrastructure.builder.Builder;
 import infrastructure.controllers.endpoint.IController;
 import infrastructure.controllers.endpoint.IFactory;
@@ -16,38 +16,33 @@ public class Factory implements IFactory {
 
     @Override
     public IController createInstance() {
-        return new CalcController();
+        return new AuthController();
     }
 }
-class CalcController implements IController {
+class AuthController implements IController {
 
     @Override
     public boolean supports(String path, Method method) {
-        return ((path.startsWith("/calc")) && (method == Method.GET));
+        return ((path.startsWith("/auth")) && (method == Method.GET));
     }
 
     @Override
     public Response service(Request request) throws Exception {
         Map<String, String> requestParams = request.params;
-        int a = Integer.parseInt(requestParams.get("a"));
-        int b = Integer.parseInt(requestParams.get("b"));
-        ICalcService ts = Builder.buildCalcService();
-        String calc = null;
-        if (request.path.endsWith("/sum")) {
-            calc = ts.sum(a, b);
-        } else if (request.path.endsWith("/sub")) {
-            calc = ts.sub(a, b);
-        }
+        String login = requestParams.get("login");
+        String password = requestParams.get("password");
+        ILoginService ts = Builder.buildLoginService();
+        String token = ts.login(login, password);
         Response response = new Response();
-        if (calc != null) {
+        if (token != null) {
             response.code = 200;
             response.headers = new HashMap<>();
             response.headers.put("Content-Type", "text/plain; charset=UTF-8");
             response.body = new HashMap<>();
-            response.body.put("result", calc);
-            //response.body = calc;
+            response.body.put("token", "token");
+            //response.body = token;
         } else {
-            throw new Exception("calc is not defined");
+            throw new Exception("login and/or password are invalid");
         }
         return response;
     }

@@ -8,5 +8,5 @@ public class Request {
     public String path;
     public Map<String, String> params;
     public Map<String, String> headers;
-    public String body;
+    public Map<String, Object> body;
 }

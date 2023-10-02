@@ -9,7 +9,11 @@ public class RegisterService implements IRegisterService, IStorageUsing {
 
     @Override
     public String register(String login, String password) {
-        return storage.registerNewAcc(login, password);
+        if (storage.addUser(login, password)) {
+            return "token";
+        } else {
+            return "";
+        }
     }
 
     @Override

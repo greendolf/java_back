@@ -1,7 +1,6 @@
-package infrastructure.controllers.endpoint.login;
+package infrastructure.controllers.endpoint.tasks;
 
-
-import app.ILoginService;
+import app.ITasksService;
 import infrastructure.builder.Builder;
 import infrastructure.controllers.endpoint.IController;
 import infrastructure.controllers.endpoint.IFactory;
@@ -13,34 +12,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Factory implements IFactory {
-
     @Override
     public IController createInstance() {
-        return new LoginController();
+        return new TasksController();
     }
 }
-class LoginController implements IController {
+
+class TasksController implements IController {
 
     @Override
     public boolean supports(String path, Method method) {
-        return ((path.startsWith("/login")) && (method == Method.GET));
+        return ((path.startsWith("/tasks")) && (method == Method.GET));
     }
 
     @Override
     public Response service(Request request) throws Exception {
         Map<String, String> requestParams = request.params;
         String login = requestParams.get("login");
-        String password = requestParams.get("password");
-        ILoginService ts = Builder.buildLoginService();
-        String token = ts.login(login, password);
+        String token = requestParams.get("token");
+        ITasksService ts = Builder.buildTasksService();
+        String result = ts.getTasks(login);
         Response response = new Response();
-        if (token != null) {
+        if (result != null) {
             response.code = 200;
             response.headers = new HashMap<>();
             response.headers.put("Content-Type", "text/plain; charset=UTF-8");
-            response.body = token;
+            response.body = new HashMap<>();
+            response.body.put("result", "OK");
+            //response.body = "OK";
         } else {
-            throw new Exception("login and/or password are invalid");
+            throw new Exception("error while getting tasks");
         }
         return response;
     }

@@ -1,5 +1,6 @@
 //mapper
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -15,6 +16,7 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Server {
 
@@ -38,11 +40,12 @@ class Handler implements HttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
         OutputStream responseStream = httpExchange.getResponseBody();
         Headers responseHeaders = httpExchange.getResponseHeaders();
-        String responseBody = "";
+        Map<String, Object> responseBody;
 
         try {
             InputStream requestBodyStream = httpExchange.getRequestBody();
-            String requestBody = new String(requestBodyStream.readAllBytes());
+            Map<String, Object> requestBody =
+                    new ObjectMapper().readValue(new String(requestBodyStream.readAllBytes()), HashMap.class);
             Headers requestHeaders = httpExchange.getRequestHeaders();
             String requestMethod = httpExchange.getRequestMethod();
             URI requestURI = httpExchange.getRequestURI();
@@ -78,18 +81,20 @@ class Handler implements HttpHandler {
                 }
             }
             responseBody = response.body;
-            httpExchange.sendResponseHeaders(response.code, responseBody.getBytes().length);
+            httpExchange.sendResponseHeaders(response.code, responseBody.toString().getBytes().length);
         } catch (Exception ex) {
-            responseBody = "Fatal error: " + ex.getMessage();
+            responseBody = new HashMap<>();
+            responseBody.put("desc", "fatal error" + ex.getMessage()); //"Fatal error: " + ex.getMessage();
             responseHeaders.clear();
-            httpExchange.sendResponseHeaders(500, responseBody.getBytes().length);
+            httpExchange.sendResponseHeaders(500, responseBody.toString().getBytes().length);
         }
 
-        responseStream.write(responseBody.getBytes());
+        responseStream.write(new ObjectMapper().writeValueAsString(responseBody).getBytes());
         responseStream.flush();
         responseStream.close();
     }
 }
+
 class Router {
 
     private static IFactory[] controllerFactories;
@@ -116,7 +121,9 @@ class Router {
             response = new Response();
             response.code = 400;
             response.headers = new HashMap<>();
-            response.body = "No implementation for path or method";
+            response.body = new HashMap<>();
+            response.body.put("desc", "no implementation for path or method");
+            //response.body = "No implementation for path or method";
 
         }
         return response;

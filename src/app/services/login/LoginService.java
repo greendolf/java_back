@@ -9,8 +9,13 @@ public class LoginService implements ILoginService, IStorageUsing {
 
     @Override
     public String login(String login, String password) {
-        return storage.checkLogPas(login, password);
+        if (storage.findUser(login, password)) {
+            return "token";
+        } else {
+            return "";
+        }
     }
+
     @Override
     public void useStorage(IStorage storage) {
         this.storage = storage;

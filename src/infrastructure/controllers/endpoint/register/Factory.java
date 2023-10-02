@@ -32,9 +32,9 @@ class RegisterController implements IController {
 
     @Override
     public Response service(Request request) throws Exception {
-        Map<String, String> requestParams = request.params;
-        String login = requestParams.get("login");
-        String password = requestParams.get("password");
+        Map<String, Object> requestBody = request.body;
+        String login = (String) requestBody.get("login");
+        String password = (String) requestBody.get("password");
         IRegisterService ts = Builder.buildRegisterService();
         String token = ts.register(login, password);
         Response response = new Response();
@@ -42,7 +42,9 @@ class RegisterController implements IController {
             response.code = 200;
             response.headers = new HashMap<>();
             response.headers.put("Content-Type", "text/plain; charset=UTF-8");
-            response.body = token;
+            response.body = new HashMap<>();
+            response.body.put("result", token);
+            //response.body = token;
         } else {
             throw new Exception("login and/or password are invalid or busy");
         }
