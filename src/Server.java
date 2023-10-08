@@ -49,7 +49,7 @@ class Handler implements HttpHandler {
 
             Request request = new Request();
             request.method = Method.valueOf(requestMethod.toUpperCase());
-            if (request.method == Method.POST) {
+            if (request.method != Method.GET) {
                 InputStream requestBodyStream = httpExchange.getRequestBody();
                 String bodyString = new String(requestBodyStream.readAllBytes());
                 request.body = new ObjectMapper().readValue(bodyString, HashMap.class);

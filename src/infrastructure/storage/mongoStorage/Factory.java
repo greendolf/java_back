@@ -136,6 +136,26 @@ class mongoStorage implements IStorage {
     }
 
     @Override
+    public boolean deleteTask(int id) {
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            System.out.println("database connection successful for creating task");
+            MongoDatabase database = mongoClient.getDatabase("java_back");
+            MongoCollection<Document> tasks = database.getCollection("tasks");
+            System.out.println("tasks connected");
+            MongoCollection<Document> task = database.getCollection("task");
+            System.out.println("task connected");
+            System.out.println("id = " + id);
+            if (task.find(eq("id", id)).first() != null && tasks.find(eq("id", id)).first() != null) {
+                task.findOneAndDelete(eq("id", id));
+                tasks.findOneAndDelete(eq("id", id));
+                return task.find(eq("id", id)).first() == null && tasks.find(eq("id", id)).first() == null;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    @Override
     public boolean modifyTask(int id, int result, String status) {
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             System.out.println("database connection successful for modifying task");

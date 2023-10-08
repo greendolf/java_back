@@ -23,7 +23,7 @@ class TaskController implements IController {
 
     @Override
     public boolean supports(String path, Method method) {
-        return (Objects.equals(path, "/task")) && (method == Method.GET || method == Method.POST);
+        return (Objects.equals(path, "/task")) && (method == Method.GET || method == Method.POST || method == Method.DELETE);
     }
 
     @Override
@@ -39,9 +39,13 @@ class TaskController implements IController {
             int value1 = (int) requestBody.get("value1");
             int value2 = (int) requestBody.get("value2");
             result = ts.createTask(login, value1, value2);
+        } else if (request.method == Method.DELETE) {
+            Map<String, Object> requestBody = request.body;
+            int id = (int) requestBody.get("id");
+            result = ts.deleteTask(id) ? 1 : 0;
         }
         Response response = new Response();
-        if (result != -1) {
+        if (result != -1 && result != 0) {
             response.code = 200;
             response.headers = new HashMap<>();
             response.headers.put("Content-Type", "text/plain; charset=UTF-8");
@@ -49,7 +53,7 @@ class TaskController implements IController {
             response.body.put("result", result);
             //response.body = "OK";
         } else {
-            throw new Exception("error while creating task");
+            throw new Exception("error while creating or deleting task");
         }
         return response;
     }
