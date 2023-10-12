@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="modules">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../../../../glassfish/glassfish/modules" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../../../../../glassfish/glassfish/modules" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../../glassfish/glassfish/modules" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../../glassfish/glassfish/modules" recursive="false" type="SOURCES" />
+  </library>
+</component>

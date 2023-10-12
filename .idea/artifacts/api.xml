@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="api">
+    <output-path>$PROJECT_DIR$/out/artifacts/api</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="java_back/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="java_back" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="fasterxml.jackson.core.databind" />
+          <element id="library" level="project" name="mongodb.mongo.java.driver" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
