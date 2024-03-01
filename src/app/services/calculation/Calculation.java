@@ -4,7 +4,9 @@ package app.services.calculation;
 import app.ICalculationService;
 import app.IStorage;
 import app.IStorageUsing;
+import app.ITokenManagerUsing;
 import domain.ICalculator;
+import infrastructure.security.ITokenManager;
 
 import java.util.Map;
 
@@ -33,4 +35,5 @@ public class Calculation implements ICalculationService, IStorageUsing {
     public void useStorage(IStorage storage) {
         this.storage = storage;
     }
+
 }

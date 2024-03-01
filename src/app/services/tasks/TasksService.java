@@ -11,13 +11,7 @@ public class TasksService implements ITasksService, IStorageUsing {
 
     @Override
     public String getTasks(String login) {
-        StringBuilder result = new StringBuilder();
-        String[] tasks = storage.getTasks(login);
-        if (tasks == null ) return null;
-        for (String task : tasks) {
-            result.append(task);
-        }
-        return result.toString();
+        return storage.getTasks(login);
     }
 
     @Override

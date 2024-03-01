@@ -3,7 +3,6 @@ package infrastructure.dtos;
 public class User {
     private String login;
     private String password;
-    private String token;
 
     public String getLogin() {
         return login;
@@ -21,11 +20,4 @@ public class User {
         this.password = password;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

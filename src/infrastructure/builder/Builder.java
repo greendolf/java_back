@@ -1,52 +1,69 @@
 package infrastructure.builder;
 
 import app.*;
+import infrastructure.security.ITokenManager;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+
 
 public class Builder {
-    public static ICalculationService buildCalculationService() {
-        IStorage storage = infrastructure.storage.mongoStorage.Factory.createInstance();
+    @Inject
+    @Default
+    private IAuthService IAS;
+    @Inject
+    @Default
+    private ICalculationService ICS;
+    @Inject
+    @Default
+    private IRegisterService IRS;
+    @Inject
+    @Default
+    private ITaskService ITS;
+    @Inject
+    @Default
+    private ITasksService ITsS;
+    @Inject
+    @Production
+    private IStorage storage;
+    @Inject
+    @Default
+    private ITokenManager tokenManager;
 
-        ICalculationService service = app.Factory.createCalculationService();
-        ((IStorageUsing) service).useStorage(storage);
-
-        return service;
+    @Produces
+    @Built
+    public IAuthService buildAuthService() {
+        ((IStorageUsing) IAS).useStorage(storage);
+        ((ITokenManagerUsing) IAS).useTokenManager(tokenManager);
+        return IAS;
     }
 
-    public static IAuthService buildAuthService() {
-
-        IStorage storage = infrastructure.storage.mongoStorage.Factory.createInstance();
-
-        IAuthService service = app.Factory.createAuthService();
-        ((IStorageUsing) service).useStorage(storage);
-
-        return service;
+    @Produces
+    @Built
+    public ICalculationService buildCalcService() {
+        ((IStorageUsing) ICS).useStorage(storage);
+        return ICS;
     }
 
-    public static IRegisterService buildRegisterService() {
-
-        IStorage storage = infrastructure.storage.mongoStorage.Factory.createInstance();
-
-        IRegisterService service = app.Factory.createRegisterService();
-        ((IStorageUsing) service).useStorage(storage);
-
-        return service;
+    @Produces
+    @Built
+    public IRegisterService buildRegisterService() {
+        ((IStorageUsing) IRS).useStorage(storage);
+        ((ITokenManagerUsing) IRS).useTokenManager(tokenManager);
+        return IRS;
     }
-    public static ITaskService buildTaskService() {
 
-        IStorage storage = infrastructure.storage.mongoStorage.Factory.createInstance();
-
-        ITaskService service = app.Factory.createTaskService();
-        ((IStorageUsing) service).useStorage(storage);
-
-        return service;
+    @Produces
+    @Built
+    public ITaskService buildTaskService() {
+        ((IStorageUsing) ITS).useStorage(storage);
+        return ITS;
     }
-    public static ITasksService buildTasksService() {
 
-        IStorage storage = infrastructure.storage.mongoStorage.Factory.createInstance();
-
-        ITasksService service = app.Factory.createTasksService();
-        ((IStorageUsing) service).useStorage(storage);
-
-        return service;
+    @Produces
+    @Built
+    public ITasksService buildTasksService() {
+        ((IStorageUsing) ITsS).useStorage(storage);
+        return ITsS;
     }
 }

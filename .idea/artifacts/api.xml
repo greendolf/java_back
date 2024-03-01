@@ -10,7 +10,9 @@
         <element id="directory" name="lib">
           <element id="library" level="project" name="fasterxml.jackson.core.databind" />
           <element id="library" level="project" name="mongodb.mongo.java.driver" />
+          <element id="library" level="project" name="io.jsonwebtoken.jjwt" />
         </element>
+        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/beans.xml" />
       </element>
     </root>
   </artifact>
