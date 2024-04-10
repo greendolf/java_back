@@ -11,6 +11,17 @@
         </webroots>
       </configuration>
     </facet>
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <setting name="provider-name" value="EclipseLink" />
+        <datasource-mapping>
+          <factory-entry name="java_back" value="b4e9c068-3cde-4341-a40f-e119ea12c9bf" />
+        </datasource-mapping>
+        <naming-strategy-map />
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/persistence/persistence.xml" />
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />

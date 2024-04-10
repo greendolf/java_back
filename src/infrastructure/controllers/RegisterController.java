@@ -1,10 +1,9 @@
 package infrastructure.controllers;
 
 import app.IRegisterService;
-import infrastructure.builder.Builder;
 import infrastructure.builder.Built;
 import infrastructure.dtos.ResponseDTO;
-import infrastructure.dtos.User;
+import infrastructure.dtos.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -12,7 +11,6 @@ import jakarta.json.bind.JsonbException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
 
@@ -28,7 +26,7 @@ public class RegisterController {
         Jsonb jsonb = JsonbBuilder.create();
         try {
             String resultJSON;
-            User user = jsonb.fromJson(credJSON, User.class);
+            UserDTO user = jsonb.fromJson(credJSON, UserDTO.class);
             System.out.println(user.getLogin() + " " + user.getPassword());
             String token = IRS.register(user.getLogin(), user.getPassword());
             resultJSON = jsonb.toJson(new ResponseDTO().setMessage(token));

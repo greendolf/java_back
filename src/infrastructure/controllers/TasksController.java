@@ -35,6 +35,7 @@ public class TasksController {
     public Response service() {
         Jsonb jsonb = JsonbBuilder.create();
         String token = headers.getHeaderString(HttpHeaders.AUTHORIZATION).replace("Bearer ", "");
+        System.out.println("TOKEN: " + token);
         if (!IAS.validateToken(token)) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(jsonb.toJson(new ResponseDTO().setMessage("Bad authorization"))).build();
         }

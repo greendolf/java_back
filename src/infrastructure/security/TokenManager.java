@@ -1,5 +1,6 @@
 package infrastructure.security;
 
+import infrastructure.dtos.UserDTO;
 import io.jsonwebtoken.Jwts;
 
 import javax.crypto.SecretKey;
@@ -12,8 +13,9 @@ class TokenManager implements ITokenManager {
     private static final SecretKey secretKey = new SecretKeySpec(secretBytes, 0, secretBytes.length, "HmacSHA256");
 
     @Override
-    public String generateToken(String login, String password) {
-
+    public String generateToken(UserDTO user) {
+        String login = user.getLogin();
+        String password = user.getPassword();
         return Jwts.builder().subject(login).claim("password", password).signWith(secretKey).compact();
     }
 

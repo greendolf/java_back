@@ -4,6 +4,7 @@ import app.IAuthService;
 import app.IStorage;
 import app.IStorageUsing;
 import app.ITokenManagerUsing;
+import infrastructure.dtos.UserDTO;
 import infrastructure.security.ITokenManager;
 
 import java.util.Map;
@@ -14,8 +15,9 @@ public class AuthService implements IAuthService, IStorageUsing, ITokenManagerUs
 
     @Override
     public String login(String login, String password) {
-        if (storage.findUser(login, password)) {
-            return tokenManager.generateToken(login, password);
+        UserDTO user = new UserDTO(login, password);
+        if (storage.findUser(user)) {
+            return tokenManager.generateToken(user);
         } else {
             return null;
         }
@@ -34,7 +36,8 @@ public class AuthService implements IAuthService, IStorageUsing, ITokenManagerUs
     @Override
     public boolean validateToken(String token) {
         Map<String, String> tokenInfo = tokenManager.getTokenInfo(token);
-        return storage.findUser(tokenInfo.get("login"), tokenInfo.get("password"));
+        UserDTO user = new UserDTO(tokenInfo.get("login"), tokenInfo.get("password"));
+        return storage.findUser(user);
     }
 
     @Override

@@ -6,6 +6,7 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="java_back" />
+          <element id="jpa-descriptors" facet="java_back/jpa/JPA" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="fasterxml.jackson.core.databind" />

@@ -10,6 +10,7 @@ import static com.mongodb.client.model.Sorts.descending;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Updates;
 import infrastructure.builder.Production;
+import infrastructure.dtos.UserDTO;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -26,7 +27,6 @@ public class Factory {
     }
 }
 
-@Production
 class MongoStorage implements IStorage {
     private final String uri = "mongodb://localhost:27017";
 
@@ -36,7 +36,9 @@ class MongoStorage implements IStorage {
     }
 
     @Override
-    public boolean findUser(String login, String password) {
+    public boolean findUser(UserDTO user) {
+        String login = user.getLogin();
+        String password = user.getPassword();
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoCollection<Document> collection = getCollection(mongoClient, "users");
             Bson andComparison = and(eq("login", login), eq("password", password));
@@ -52,13 +54,15 @@ class MongoStorage implements IStorage {
     }
 
     @Override
-    public boolean addUser(String login, String password) {
+    public boolean addUser(UserDTO user) {
+        String login = user.getLogin();
+        String password = user.getPassword();
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoCollection<Document> collection = getCollection(mongoClient, "users");
             if (collection.find(eq("login", login)).first() == null) {
                 Document doc = new Document("login", login).append("password", password);
                 collection.insertOne(doc);
-                if (findUser(login, password)) {
+                if (findUser(user)) {
                     return true;
                 } else {
                     System.out.println("error while registration");
