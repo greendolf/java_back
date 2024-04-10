@@ -21,6 +21,7 @@ class TokenManager implements ITokenManager {
 
     @Override
     public Map<String, String> getTokenInfo(String token) {
+        System.out.println("TOKENN: " + token);
         String login = (String) Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("sub");
         String password = (String) Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("password");
 

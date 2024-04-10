@@ -58,10 +58,10 @@ class PostgresStorage implements IStorage {
     private Connection getConnectionPool() throws Exception {
         try {
             InitialContext initialContext = new InitialContext();
-            DataSource ds = (DataSource) initialContext.lookup("jdbc/java_back");
+            DataSource ds = (DataSource) initialContext.lookup("jdbc/UserTransaction");
             return ds.getConnection();
         } catch (Exception e) {
-            throw new Exception("Exception in getConn()" + e.getMessage());
+            throw new Exception("Exception in getConn() " + e.getMessage());
         }
     }
 
@@ -151,7 +151,7 @@ class PostgresStorage implements IStorage {
                 resultBuilder.append("]}");
                 System.out.println(resultBuilder);
                 st.close();
-
+                System.out.println("GET SUCCESS");
                 return String.valueOf(resultBuilder);
             }
         } catch (Exception e) {
@@ -166,14 +166,13 @@ class PostgresStorage implements IStorage {
             try (Connection conn = getConnectionPool()) {
                 int id = new BigDecimal(new Date().getTime() / 100 % 1000000000).intValueExact();
 
-                PreparedStatement st = conn.prepareStatement("INSERT INTO tasks (id, value1, value2, result, status, login) VALUES (?, ?, ?, ?, ?, ?)");
+                PreparedStatement st = conn.prepareStatement("INSERT INTO tasks (id, login, value1, value2, status) VALUES (?, ?, ?, ?, ?)");
 
                 st.setInt(1, id);
-                st.setInt(2, value1);
-                st.setInt(3, value2);
-                st.setString(4, "null");
+                st.setString(2, login);
+                st.setInt(3, value1);
+                st.setInt(4, value2);
                 st.setString(5, "not started");
-                st.setString(6, login);
 
                 st.executeUpdate();
                 st.close();
