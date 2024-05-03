@@ -1,22 +1,20 @@
-package app.services.auth;
+package app.services;
 
-import app.IAuthService;
-import app.IStorage;
-import app.IStorageUsing;
-import app.ITokenManagerUsing;
-import infrastructure.dtos.UserDTO;
+import app.api.IAuthService;
+import app.api.IStorage;
+import app.api.IStorageUsing;
+import app.api.ITokenManagerUsing;
+import app.dtos.DTO;
 import infrastructure.security.ITokenManager;
-
-import java.util.Map;
 
 public class AuthService implements IAuthService, IStorageUsing, ITokenManagerUsing {
     private IStorage storage;
     private ITokenManager tokenManager;
 
     @Override
-    public String login(String login, String password) {
-        UserDTO user = new UserDTO(login, password);
-        if (storage.findUser(user)) {
+    public String login(DTO user) throws Exception {
+        user.id = storage.findUser(user);
+        if (user.id != -1) {
             return tokenManager.generateToken(user);
         } else {
             return null;
@@ -35,13 +33,12 @@ public class AuthService implements IAuthService, IStorageUsing, ITokenManagerUs
 
     @Override
     public boolean validateToken(String token) {
-        Map<String, String> tokenInfo = tokenManager.getTokenInfo(token);
-        UserDTO user = new UserDTO(tokenInfo.get("login"), tokenInfo.get("password"));
-        return storage.findUser(user);
+        DTO user = tokenManager.getTokenInfo(token);
+        return user.id != -1;
     }
 
     @Override
-    public Map<String, String> getUserInfo(String token) {
+    public DTO getUserInfo(String token) {
         return tokenManager.getTokenInfo(token);
     }
 }

@@ -1,8 +1,8 @@
-package infrastructure.controllers;
+package infrastructure.controllers.in;
 
-import app.IAuthService;
-import app.ITaskService;
-import infrastructure.builder.Builder;
+import app.api.IAuthService;
+import app.api.ITaskService;
+import app.dtos.DTO;
 
 import infrastructure.builder.Built;
 import infrastructure.dtos.RequestDTO;
@@ -32,7 +32,7 @@ public class TaskController {
     @Path("/")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response postTask(String bodyJSON) {
+    public Response postTask(String bodyJSON) throws Exception {
         Jsonb jsonb = JsonbBuilder.create();
         String token = headers.getHeaderString(HttpHeaders.AUTHORIZATION).replace("Bearer ", "");
         if (!IAS.validateToken(token)) {
@@ -40,11 +40,9 @@ public class TaskController {
         }
         try {
             System.out.println("posting task");
-            RequestDTO requestDTO = jsonb.fromJson(bodyJSON, RequestDTO.class);
-            requestDTO.login = IAS.getUserInfo(token).get("login");
-            System.out.println("requestDTO created");
-            System.out.println("login = " + requestDTO.login + " value1 = " + requestDTO.value1 + " value2 = " + requestDTO.value2);
-            int result = ITS.createTask(requestDTO.login, requestDTO.value1, requestDTO.value2);
+            DTO data = jsonb.fromJson(bodyJSON, DTO.class);
+            data.id = IAS.getUserInfo(token).id;
+            int result = ITS.createTask(data);
             if (result != -1) {
                 String resultJSON = jsonb.toJson(new ResponseDTO().setMessage(Integer.toString(result)));
                 return Response.ok(resultJSON).build();

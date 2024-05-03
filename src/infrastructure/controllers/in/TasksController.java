@@ -1,8 +1,8 @@
-package infrastructure.controllers;
+package infrastructure.controllers.in;
 
 
-import app.IAuthService;
-import app.ITasksService;
+import app.api.IAuthService;
+import app.api.ITasksService;
 
 import infrastructure.builder.Built;
 import infrastructure.dtos.ResponseDTO;
@@ -15,6 +15,7 @@ import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
@@ -32,7 +33,8 @@ public class TasksController {
 
     @GET
     @Path("/")
-    public Response service() {
+    @Produces("application/json")
+    public Response service() throws Exception {
         Jsonb jsonb = JsonbBuilder.create();
         String token = headers.getHeaderString(HttpHeaders.AUTHORIZATION).replace("Bearer ", "");
         System.out.println("TOKEN: " + token);
@@ -40,8 +42,8 @@ public class TasksController {
             return Response.status(Response.Status.UNAUTHORIZED).entity(jsonb.toJson(new ResponseDTO().setMessage("Bad authorization"))).build();
         }
         try {
-            String login = IAS.getUserInfo(token).get("login");
-            String result = ITsS.getTasks(login);
+            int id = IAS.getUserInfo(token).id;
+            String result = ITsS.getTasks(id);
             if (result != null) {
                 String resultJSON = jsonb.toJson(new ResponseDTO().setMessage(result));
                 return Response.ok(resultJSON).build();

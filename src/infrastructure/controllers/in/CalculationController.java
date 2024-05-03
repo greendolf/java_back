@@ -1,11 +1,11 @@
-package infrastructure.controllers;
+package infrastructure.controllers.in;
 
 
-import app.IAuthService;
-import app.ICalculationService;
+import app.api.IAuthService;
+import app.api.ICalculationService;
 
-import infrastructure.builder.Builder;
 import infrastructure.builder.Built;
+import app.dtos.DTO;
 import infrastructure.dtos.ResponseDTO;
 
 import jakarta.inject.Inject;
@@ -13,6 +13,7 @@ import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
 
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
@@ -20,9 +21,10 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
 
+import java.util.Arrays;
 import java.util.Objects;
 
-@Path("/calc")
+@Path("/calculation")
 public class CalculationController {
     @Inject
     @Built
@@ -33,42 +35,21 @@ public class CalculationController {
     @Context
     private HttpHeaders headers;
 
-    static class RequestDTO {
-        String token;
-        int id;
-    }
 
     @POST
     @Path("/sum")
-    public Response startCalculationSum(String bodyJSON) {
+    @Consumes("application/json")
+    public Response startCalculationSum(String bodyJSON) throws Exception {
         Jsonb jsonb = JsonbBuilder.create();
         String token = headers.getHeaderString(HttpHeaders.AUTHORIZATION).replace("Bearer ", "");
         if (!IAS.validateToken(token)) {
             return Response.status(Response.Status.UNAUTHORIZED).entity(jsonb.toJson(new ResponseDTO().setMessage("Bad authorization"))).build();
         }
         try {
-            RequestDTO requestDTO = jsonb.fromJson(bodyJSON, RequestDTO.class);
-            String calc = ICS.sum(requestDTO.id);
+            DTO requestDTO = jsonb.fromJson(bodyJSON, DTO.class);
+            double[][] calc = ICS.calculate(requestDTO.id);
             if (!Objects.equals(calc, "")) {
-                String resultJSON = jsonb.toJson(new ResponseDTO().setMessage(calc));
-                return Response.ok(resultJSON).build();
-            } else {
-                throw new Exception("calc is not defined");
-            }
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(jsonb.toJson(new ResponseDTO().setMessage(e.getMessage()))).build();
-        }
-    }
-
-    @POST
-    @Path("/sub")
-    public Response startCalculationSub(String bodyJSON) {
-        Jsonb jsonb = JsonbBuilder.create();
-        try {
-            RequestDTO requestDTO = jsonb.fromJson(bodyJSON, RequestDTO.class);
-            String calc = ICS.sub(requestDTO.id);
-            if (!Objects.equals(calc, "")) {
-                String resultJSON = jsonb.toJson(new ResponseDTO().setMessage(calc));
+                String resultJSON = jsonb.toJson(new ResponseDTO().setMessage(Arrays.deepToString(calc)));
                 return Response.ok(resultJSON).build();
             } else {
                 throw new Exception("calc is not defined");

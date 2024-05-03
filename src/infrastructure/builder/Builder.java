@@ -1,6 +1,9 @@
 package infrastructure.builder;
 
-import app.*;
+import app.api.*;
+import app.api.time.ITimeService;
+import app.api.time.ITransporterUsing;
+import infrastructure.controllers.out.ws.ITransporter;
 import infrastructure.security.ITokenManager;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Produces;
@@ -29,6 +32,12 @@ public class Builder {
     @Inject
     @Default
     private ITokenManager tokenManager;
+    @Inject
+    @Default
+    private ITimeService ITimeS;
+    @Inject
+    @Default
+    private ITransporter transporter;
 
     @Produces
     @Built
@@ -65,5 +74,11 @@ public class Builder {
     public ITasksService buildTasksService() {
         ((IStorageUsing) ITsS).useStorage(storage);
         return ITsS;
+    }
+    @Produces
+    @Built
+    public ITimeService buildTimeService() {
+        ((ITransporterUsing) ITimeS).useTransporter(transporter);
+        return ITimeS;
     }
 }

@@ -1,10 +1,10 @@
-package app.services.register;
+package app.services;
 
-import app.IRegisterService;
-import app.IStorage;
-import app.IStorageUsing;
-import app.ITokenManagerUsing;
-import infrastructure.dtos.UserDTO;
+import app.api.IRegisterService;
+import app.api.IStorage;
+import app.api.IStorageUsing;
+import app.api.ITokenManagerUsing;
+import app.dtos.DTO;
 import infrastructure.security.ITokenManager;
 
 public class RegisterService implements IRegisterService, IStorageUsing, ITokenManagerUsing {
@@ -12,8 +12,7 @@ public class RegisterService implements IRegisterService, IStorageUsing, ITokenM
     private ITokenManager tokenManager;
 
     @Override
-    public String register(String login, String password) throws Exception {
-        UserDTO user = new UserDTO(login, password);
+    public String register(DTO user) throws Exception {
         if (storage.addUser(user)) {
             return tokenManager.generateToken(user);
         } else {

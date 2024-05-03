@@ -1,4 +1,4 @@
-package app;
+package app.api;
 
 import infrastructure.security.ITokenManager;
 
